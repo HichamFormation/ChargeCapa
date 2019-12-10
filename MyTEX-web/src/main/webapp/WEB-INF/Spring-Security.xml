@@ -1,0 +1,55 @@
+
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+	xmlns:beans="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+		                http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+						http://www.springframework.org/schema/security
+						http://www.springframework.org/schema/security/spring-security-4.0.xsd">
+
+	<!-- *****************************SECURITY************************ -->
+
+	<beans:bean id="authenticationSuccessHandler"
+		class="org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler">
+		<beans:property name="defaultTargetUrl" value="/welcome.xhtml" />
+	</beans:bean>
+
+	<beans:bean id="myAuthenticationDetailsSource"
+		class="com.safran.ses.casablanca.mytex.security1.MyAuthenticationDetailsSource">
+	</beans:bean>
+
+	<beans:bean id="userservice"
+		class="com.safran.ses.casablanca.mytex.service.impl.UserServiceImpl">
+	</beans:bean>
+
+	<beans:bean id="myAuthenticationProvider"
+		class="com.safran.ses.casablanca.mytex.security1.MyAuthenticationProvider">
+		<beans:property name="userService" ref="userservice"></beans:property>
+	</beans:bean>
+
+	<authentication-manager>
+		<authentication-provider ref="myAuthenticationProvider" />
+	</authentication-manager>
+
+	<http use-expressions="true">
+
+		<form-login login-page="/login.xhtml"
+			authentication-failure-url="/login.xhtml?error=1" default-target-url="/welcome.xhtml"
+			authentication-details-source-ref="myAuthenticationDetailsSource"
+			authentication-success-handler-ref="authenticationSuccessHandler"
+			username-parameter="username" password-parameter="password"
+			login-processing-url="/j_spring_security_check" />
+
+		<intercept-url pattern="/login.xhtml" access="permitAll" />
+		<intercept-url pattern="/css/**" access="hasRole('ROLE_ADMIN')" />
+		<intercept-url pattern="/SuiviTechnique**" access="hasRole('ROLE_ADMIN')" />
+		<intercept-url pattern="/Wbs**" access="hasRole('ROLE_ADMIN')" />
+		<intercept-url pattern="/JourFerie**" access="hasRole('ROLE_ADMIN')" />
+		<intercept-url pattern="/welcome**" access="hasRole('ROLE_ADMIN')" />
+		<intercept-url pattern="/imputations**" access="hasRole('ROLE_ADMIN')" />
+		<intercept-url pattern="/HeuresTravail**" access="hasRole('ROLE_ADMIN')" />
+		<intercept-url pattern="/User**" access="hasRole('ROLE_ADMIN')" />
+
+		<logout logout-success-url="/login.xhtml" invalidate-session="true" />
+		<csrf disabled="true"/>
+	</http>
+</beans:beans>

@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:s="http://primefaces.org/ui"
+	template="/WEB-INF/templates/template.xhtml">
+	<ui:define name="content">
+
+		<h:form id="f1">
+<!-- rendered="#{request.isUserInRole('ADMIN')}" -->
+			<s:toolbar >
+				<f:facet name="left">
+					<s:commandButton id="addWBS" value="Sélection nouveau WBS"
+						type="button" icon="fa fa-suitcase" />
+					<s:overlayPanel for="addWBS" id="overlayWBS" hideEffect="fade"
+						dynamic="true">
+						<s:panel>
+							<table>
+								<tr>
+									<td><s:outputLabel for="wbsSelection"
+											value="WBS à ajouter: " /></td>
+									<td><s:selectOneMenu id="wbsSelection" filter="true"
+											filterMatchMode="contains">
+	
+											<s:ajax event="change"
+												listener="#{imputationManagedBean.onWBSChange}"
+												update="imputationLines,wbsSelection" />
+	
+											<f:selectItem itemLabel="Selectionner un WBS" itemValue="" />
+											<f:selectItems
+												value="#{imputationManagedBean.calculateSelectableWBS()}"
+												var="wbs"
+												itemLabel="#{wbs.code}&#09;&#47;&#47;&#09;#{wbs.name}"
+												itemValue="#{wbs.wbsId}" />
+	
+										</s:selectOneMenu></td>
+								</tr>
+							</table>
+						</s:panel>
+					</s:overlayPanel>
+					
+					<span class="ui-separator">
+		                <span class="ui-icon ui-icon-grip-dotted-vertical" />
+		            </span>
+				
+				<s:commandButton icon="fa fa-arrow-circle-left"
+						action="#{imputationManagedBean.getPreviousPeriode()}"
+						update="endDate,startDate,:f1:summary,imputationLines,wbsSelection" />
+
+					<s:outputLabel for="startDate" value="Début: " />
+					<s:calendar id="startDate"
+						value="#{imputationManagedBean.periodeStartDate}" disabled="true"
+						locale="fr" navigator="true" pattern="dd/MM/yyyy" />
+
+					<s:outputLabel for="endDate" value="Fin: " />
+					<s:calendar id="endDate"
+						value="#{imputationManagedBean.periodeEndDate}" disabled="true"
+						locale="fr" navigator="true" pattern="dd/MM/yyyy" />
+
+					<s:commandButton icon="fa fa-arrow-circle-right"
+						action="#{imputationManagedBean.getNextPeriode()}"
+						update="endDate,startDate,:f1:summary,imputationLines,wbsSelection" />
+						
+						<span class="ui-separator">
+		                <span class="ui-icon ui-icon-grip-dotted-vertical" />
+		            </span>
+				
+				</f:facet>
+				<f:facet name="right">
+					<s:commandButton id="myImputationsBtn" value="Mes imputations" title="Consulter toutes mes imputations"  icon="fa fa-calendar"/>
+					<s:commandButton id="printWeekBtn" title="Imprimer"  icon="fa fa-print"/>
+				</f:facet>
+				
+				
+				
+			</s:toolbar>
+
+<br/>
+
+			<s:dataTable id="imputationLines" var="imputationLine"
+				value="#{imputationManagedBean.imputationLines}" editable="true"
+				editMode="cell"
+				rowStyleClass="#{imputationLine.wbs.present ==true ? (imputationLine.wbs.takenByDefault ==true ? 'presentRow':'') : ''} #{imputationLine.wbs.takenByDefault ==true ? 'upRow' : ''} ">
+
+				<s:ajax event="cellEdit"
+					listener="#{imputationManagedBean.onCellEdit}" update=":f1:summary" />
+
+				<f:facet name="header">
+
+
+					<h:outputLabel
+						value="Semaine: #{imputationManagedBean.week}-#{imputationManagedBean.year}">
+						<!--<f:convertDateTime pattern="MMM yyy" />-->
+					</h:outputLabel>
+				</f:facet>
+				<s:column headerText="Code">
+					<s:outputLabel
+						value="#{imputationLine.wbs.present ==false ? '':imputationLine.wbs.code}" />
+				</s:column>
+				<s:column headerText="WBS">
+					<s:outputLabel value="#{imputationLine.wbs.name}" />
+
+				</s:column>
+
+				<s:columns value="#{imputationManagedBean.columns}" var="column"
+					columnIndexVar="colIndex"
+					style="#{imputationManagedBean.calculateStyle(column)};width:35px;">
+
+					<f:facet name="header">
+						<h:outputText value="#{column.date}">
+							<f:convertDateTime pattern="EEE dd/MM" />
+						</h:outputText>
+					</f:facet>
+					<s:cellEditor>
+
+						<f:facet name="output">
+							<h:outputText
+								value="#{imputationManagedBean.showImputationValue(imputationLine,column.date).houres ==0 ? '':imputationManagedBean.showImputationValue(imputationLine,column.date).houres}" />
+						</f:facet>
+						<f:facet name="input">
+							<h:inputText id="modelInput"
+								value="#{imputationManagedBean.showImputationValue(imputationLine,column.date).houres}">
+
+							</h:inputText>
+						</f:facet>
+					</s:cellEditor>
+
+				</s:columns>
+
+
+			</s:dataTable>
+
+
+			<s:dataTable id="summary"
+				value="#{imputationManagedBean.calculateSummaryLines()}" var="line"
+				rowIndexVar="index">
+
+
+				<s:column styleClass="ui-state-default">
+					<s:outputLabel value="#{line.rowTitle}" />
+				</s:column>
+
+				<s:columns
+					value="#{imputationManagedBean.calculateSummaryColumns()}"
+					var="column" styleClass="ui-state-default" style="width:35px;">
+					<h:outputText value="#{column[line.property]}" />
+				</s:columns>
+
+
+			</s:dataTable>
+			<input type="hidden" name="${_csrf.parameterName}"
+				value="${_csrf.token}" />
+		</h:form>
+
+
+	</ui:define>
+</ui:composition>

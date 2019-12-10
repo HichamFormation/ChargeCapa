@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:s="http://primefaces.org/ui"
+	template="/WEB-INF/templates/template.xhtml">
+	<ui:define name="content">
+		<h1><h:outputText value="SAFRAN Engineering Services" /></h1>
+		Message : <br />
+		<s:outputLabel>#{userManagedBean.message}</s:outputLabel>
+		<br />
+		<h2>Tasks</h2>
+		<table>
+			<ui:repeat value="#{userManagedBean.users}" var="user">
+				<tr>
+					<td>#{user.firstName}</td>
+					
+				</tr>
+			</ui:repeat>
+		</table>
+#{userManagedBean.sayHello()}
+		<h:form>
+			<div jsf:id="wrapper"
+				style="border-top: 1px solid #d0d0d0; margin-top: 12px; padding-top: 12px">
+				<h:inputText value="#{userManagedBean.user.firstName}" id="userDesc" p:placeholder="entrer un nom" maxlength="48" required="true" label="Task">
+					<f:validateLength maximum="48"/>
+				</h:inputText>
+				<h:commandButton action="#{userManagedBean.saveUser}" value="ajouter" />
+				<h:message for="userDesc" style="color : red;padding-left : 8px"/>
+			</div>
+		<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+		</h:form>
+		
+		<h:form>
+			<table>
+			<tr><td colspan="3"/><s:messages id="messages" showDetail="true" autoUpdate="true" closable="true"/> </tr>
+			
+			</table>
+		<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+		</h:form>
+		
+	</ui:define>
+</ui:composition>

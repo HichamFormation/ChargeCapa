@@ -1,0 +1,514 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:s="http://primefaces.org/ui"
+	template="/WEB-INF/templates/template.xhtml">
+	<ui:define name="content">
+		<h1>
+			<h:outputText value="Gestion des heures du travail" />
+		</h1>
+
+		
+
+
+		<s:growl id="msgs" showDetail="true" />
+
+		<div jsf:id="wrapper"
+			style="border-top: 1px solid #d0d0d0; margin-top: 12px; padding-top: 12px">
+				<s:panel>
+				<h3>Nombre des heures par défaut :</h3>
+					<h:form id="tableByDefaultForm">
+
+
+						<s:dataTable id="byDefaultDT" var="heureTr"
+							value="#{heurestravailManagedBean.byDefaultHours}"
+							rowKey="#{HeuresTravail.heureTravailId}" editable="true"
+							style="margin-bottom:20px" resizableColumns="true"
+							liveResize="true" rows="10" styleClass="getParamByDefault">
+							<!-- "(Entries: {startRecord} - {endRecord} of {totalRecords}, Page: {currentPage}/{totalPages})" -->
+
+							<s:ajax event="sort" skipChildren="false" />
+
+							<s:ajax event="rowEditCancel"
+								listener="#{heurestravailManagedBean.onRowCancel}"
+								update="byDefaultDT,msgs" />
+							<s:ajax event="rowEdit"
+								listener="#{heurestravailManagedBean.saveHeuresTravailEdition(heureT)}"
+								update="byDefaultDT,msgs" />
+
+
+							<s:column headerText="Date de début" style="background-color: #e6f2ff">
+								<center>
+									<s:cellEditor>
+										<f:facet name="output">
+											<h:outputText value="#{heureTr.debut}">
+												<f:convertDateTime pattern="dd/MM/yyyy" />
+											</h:outputText>
+										</f:facet>
+										<f:facet name="input">
+											<s:calendar id="dateD" value="#{heureTr.debut}" locale="de"
+												navigator="true" pattern="dd/MM/yyyy" effect="fold" />
+										</f:facet>
+									</s:cellEditor>
+								</center>
+							</s:column>
+
+							<s:column headerText="Date de fin" style="background-color: #e6f2ff">
+								<center>
+									<s:cellEditor>
+										<f:facet name="output">
+											<h:outputText value="#{heureTr.fin}">
+												<f:convertDateTime pattern="dd/MM/yyyy" />
+											</h:outputText>
+										</f:facet>
+										<f:facet name="input">
+											<s:calendar id="dateF" value="#{heureTr.fin}" locale="de"
+												navigator="true" pattern="dd/MM/yyyy" effect="fold" />
+										</f:facet>
+									</s:cellEditor>
+								</center>
+							</s:column>
+
+							<s:column headerText="Lundi" width="55">
+								<center>
+									<s:cellEditor>
+										<f:facet name="output">
+											<h:outputText value="#{heureTr.lundi}" />
+										</f:facet>
+										<f:facet name="input">
+											<s:inputText id="input1" value="#{heureTr.lundi}"
+												style="width:100%" />
+										</f:facet>
+									</s:cellEditor>
+								</center>
+							</s:column>
+
+							<s:column headerText="Mardi" width="55">
+								<center>
+									<s:cellEditor>
+										<f:facet name="output">
+											<h:outputText value="#{heureTr.mardi}" />
+										</f:facet>
+										<f:facet name="input">
+											<s:inputText id="input2" value="#{heureTr.mardi}"
+												style="width:100%" />
+										</f:facet>
+									</s:cellEditor>
+								</center>
+							</s:column>
+
+							<s:column headerText="Mercredi" width="55">
+								<center>
+									<s:cellEditor>
+										<f:facet name="output">
+											<h:outputText value="#{heureTr.mercredi}" />
+										</f:facet>
+										<f:facet name="input">
+											<s:inputText id="input3" value="#{heureTr.mercredi}"
+												style="width:100%" />
+										</f:facet>
+									</s:cellEditor>
+								</center>
+							</s:column>
+
+							<s:column headerText="Jeudi" width="55">
+								<center>
+									<s:cellEditor>
+										<f:facet name="output">
+											<h:outputText value="#{heureTr.jeudi}" />
+										</f:facet>
+										<f:facet name="input">
+											<s:inputText id="input4" value="#{heureTr.jeudi}"
+												style="width:100%" />
+										</f:facet>
+									</s:cellEditor>
+								</center>
+							</s:column>
+
+							<s:column headerText="Vendredi" width="55">
+								<center>
+									<s:cellEditor>
+										<f:facet name="output">
+											<h:outputText value="#{heureTr.vendredi}" />
+										</f:facet>
+										<f:facet name="input">
+											<s:inputText id="input5" value="#{heureTr.vendredi}"
+												style="width:100%" />
+										</f:facet>
+									</s:cellEditor>
+								</center>
+							</s:column>
+
+							<s:column headerText="Samedi" width="55">
+								<center>
+									<s:cellEditor>
+										<f:facet name="output">
+											<h:outputText value="#{heureTr.samedi}" />
+										</f:facet>
+										<f:facet name="input">
+											<s:inputText id="input6" value="#{heureTr.samedi}"
+												style="width:100%" />
+										</f:facet>
+									</s:cellEditor>
+								</center>
+							</s:column>
+
+							<s:column headerText="Dimanche" width="55">
+								<center>
+									<s:cellEditor>
+										<f:facet name="output">
+											<h:outputText value="#{heureTr.dimanche}" />
+										</f:facet>
+										<f:facet name="input">
+											<s:inputText id="input7" value="#{heureTr.dimanche}"
+												style="width:100%" />
+										</f:facet>
+									</s:cellEditor>
+								</center>
+							</s:column>
+
+							<s:column headerText="Modifier" width="80">
+								<s:rowEditor />
+							</s:column>
+
+						</s:dataTable>
+
+
+						<s:panel>
+						<center>
+							<table cellpadding="8">
+								<tr>
+									<th>De :</th>
+									<th/>
+									<th>À :</th>
+								</tr>
+								
+								<tr>
+									<td>
+										<s:calendar id="date1"
+											value="#{heurestravailManagedBean.ht.debut}"
+											 navigator="true" pattern="dd/MM/yyyy"
+											effect="fold" requiredMessage="Champs obligatoire !!"
+											 p:placeholder="Entrer la date du début"
+											maxlength="100" required="true" 
+											 size="30" styleClass="dateDebutCalendar" />
+											 <td><s:message id="messageDateDebut1" for="date1" /></td>
+									</td>
+									
+									<td>
+										<s:calendar id="date2"
+											value="#{heurestravailManagedBean.ht.fin}"
+											 navigator="true" pattern="dd/MM/yyyy"
+											effect="fold" requiredMessage="Champs obligatoire !!"
+											 p:placeholder="Entrer la date de fin"
+											maxlength="100" required="true" 
+											 size="30" styleClass="dateFinCalendar" />
+											  <td><s:message id="messageDateFin1" for="date2" /></td>
+									</td>
+								</tr>
+								</table>
+								<table cellpadding="13">
+								
+								<tr>	
+									<th>Lundi</th>
+									<th>Mardi</th>
+									<th>Mercredi</th>
+									<th>Jeudi</th>
+									<th>Vendredi</th>
+									<th>Samedi</th>
+									<th>Dimanche</th>
+								</tr>
+								
+								<tr>
+								
+									
+									<td>
+										<s:inputText value="#{heurestravailManagedBean.ht.lundi}" id="lundi"
+											 maxlength="10" required="true"
+											requiredMessage="Champs obligatoire !!" size="1">
+										</s:inputText>
+									</td>
+									
+									<td>
+										<s:inputText value="#{heurestravailManagedBean.ht.mardi}" id="mardi"
+											 maxlength="10" required="true"
+											requiredMessage="Champs obligatoire !!" size="1">
+										</s:inputText>
+									</td>
+									
+									<td>
+										<s:inputText value="#{heurestravailManagedBean.ht.mercredi}" id="mercredi"
+											 maxlength="10" required="true"
+											requiredMessage="Champs obligatoire !!" size="1">
+										</s:inputText>
+									</td>
+									
+									<td>
+										<s:inputText value="#{heurestravailManagedBean.ht.jeudi}" id="jeudi"
+											 maxlength="10" required="true"
+											requiredMessage="Champs obligatoire !!" size="1">
+										</s:inputText>
+									</td>
+									
+									<td>
+										<s:inputText value="#{heurestravailManagedBean.ht.vendredi}" id="vendredi"
+											 maxlength="10" required="true"
+											requiredMessage="Champs obligatoire !!" size="1">
+										</s:inputText>
+									</td>
+									
+									<td>
+										<s:inputText value="#{heurestravailManagedBean.ht.samedi}" id="samedi"
+											 maxlength="10" required="true"
+											requiredMessage="Champs obligatoire !!" size="1">
+										</s:inputText>
+									</td>
+									
+									<td>
+										<s:inputText value="#{heurestravailManagedBean.ht.dimanche}" id="dimanche"
+											 maxlength="10" required="true"
+											requiredMessage="Champs obligatoire !!" size="1">
+										</s:inputText>
+									</td>
+								</tr>
+								</table>
+								<br/>
+								<table>
+								<tr>
+									<td>
+									<s:commandButton
+								action="#{heurestravailManagedBean.saveHeuresTravail}"
+								value="Ajouter" icon="fa fa-arrows" update=":tableByDefaultForm:byDefaultDT,:tableByDefaultForm:byDefaultDT:dateD,:tableByDefaultForm:byDefaultDT:dateF,
+								:tableByDefaultForm:byDefaultDT:input1,:tableByDefaultForm:byDefaultDT:input2,:tableByDefaultForm:byDefaultDT:input3,:tableByDefaultForm:byDefaultDT:input4,
+								:tableByDefaultForm:byDefaultDT:input5,:tableByDefaultForm:byDefaultDT:input6,:tableByDefaultForm:byDefaultDT:input7,
+								:tableByDefaultForm:date1,:tableByDefaultForm:date2,:tableByDefaultForm:lundi,:tableByDefaultForm:mardi,:tableByDefaultForm:mercredi,:tableByDefaultForm:jeudi,
+								:tableByDefaultForm:vendredi,:tableByDefaultForm:samedi,:tableByDefaultForm:dimanche,
+								:tableForm:basicDT,:tableForm:basicDT:datedebut,:tableForm:basicDT:datefin,:tableForm:basicDT:inputLundi,:tableForm:basicDT:inputMardi,
+								:tableForm:basicDT:inputMercredi,:tableForm:basicDT:inputJeudi,:tableForm:basicDT:inputVendredi,:tableForm:basicDT:inputSamedi,:tableForm:basicDT:inputDimanche,
+								:tableForm:basicDT:deleteLink, messageDateDebut1, messageDateFin1"/>
+									</td>
+								</tr>
+							</table>
+							</center>
+						
+							
+						
+						</s:panel>
+						
+						
+						<input type="hidden" name="${_csrf.parameterName}"
+				value="${_csrf.token}" /> <br /> <br />
+					</h:form>
+					<div>
+				<h:form id="tableForm">
+				<h3>Nombre des heures pérsonnalisées :</h3>
+					<s:dataTable id="basicDT" var="heureT"
+						value="#{heurestravailManagedBean.personalisedHours}"
+						rowKey="#{HeuresTravail.heureTravailId}" editable="true"
+						style="margin-bottom:20px" resizableColumns="true"
+						liveResize="true" rows="10">
+						<!-- "(Entries: {startRecord} - {endRecord} of {totalRecords}, Page: {currentPage}/{totalPages})" -->
+
+
+						<s:ajax event="sort" skipChildren="false" />
+
+						<s:ajax event="rowEditCancel"
+							listener="#{heurestravailManagedBean.onRowCancel}"
+							update="basicDT,msgs" />
+						<s:ajax event="rowEdit"
+							listener="#{heurestravailManagedBean.saveHeuresTravailEdition(heureT)}"
+							update="basicDT,msgs" />
+
+						<s:column headerText="Date de début" style="background-color: #e6f2ff" width="70">
+							<center>
+								<s:cellEditor>
+									<f:facet name="output">
+										<h:outputText value="#{heureT.debut}">
+											<f:convertDateTime pattern="dd/MM/yyyy" />
+										</h:outputText>
+									</f:facet>
+									<f:facet name="input">
+										<s:calendar id="datedebut" value="#{heureT.debut}" locale="de"
+											navigator="true" pattern="dd/MM/yyyy" effect="fold" />
+									</f:facet>
+								</s:cellEditor>
+							</center>
+						</s:column>
+
+						<s:column headerText="Date de fin" style="background-color: #e6f2ff" width="70">
+							<center>
+								<s:cellEditor>
+									<f:facet name="output">
+										<h:outputText value="#{heureT.fin}">
+											<f:convertDateTime pattern="dd/MM/yyyy" />
+										</h:outputText>
+									</f:facet>
+									<f:facet name="input">
+										<s:calendar id="datefin" value="#{heureT.fin}" locale="de"
+											navigator="true" pattern="dd/MM/yyyy" effect="fold" />
+									</f:facet>
+								</s:cellEditor>
+							</center>
+						</s:column>
+
+						<s:column headerText="Lundi" width="50">
+							<center>
+								<s:cellEditor>
+									<f:facet name="output">
+										<h:outputText value="#{heureT.lundi}" />
+									</f:facet>
+									<f:facet name="input">
+										<s:inputText id="inputLundi" value="#{heureT.lundi}"
+											style="width:100%" />
+									</f:facet>
+								</s:cellEditor>
+							</center>
+						</s:column>
+
+						<s:column headerText="Mardi" width="50">
+							<center>
+								<s:cellEditor>
+									<f:facet name="output">
+										<h:outputText value="#{heureT.mardi}" />
+									</f:facet>
+									<f:facet name="input">
+										<s:inputText id="inputMardi" value="#{heureT.mardi}"
+											style="width:100%" />
+									</f:facet>
+								</s:cellEditor>
+							</center>
+						</s:column>
+
+						<s:column headerText="Mercredi" width="50">
+							<center>
+								<s:cellEditor>
+									<f:facet name="output">
+										<h:outputText value="#{heureT.mercredi}" />
+									</f:facet>
+									<f:facet name="input">
+										<s:inputText id="inputMercredi" value="#{heureT.mercredi}"
+											style="width:100%" />
+									</f:facet>
+								</s:cellEditor>
+							</center>
+						</s:column>
+
+						<s:column headerText="Jeudi" width="50">
+							<center>
+								<s:cellEditor>
+									<f:facet name="output">
+										<h:outputText value="#{heureT.jeudi}" />
+									</f:facet>
+									<f:facet name="input">
+										<s:inputText id="inputJeudi" value="#{heureT.jeudi}"
+											style="width:100%" />
+									</f:facet>
+								</s:cellEditor>
+							</center>
+						</s:column>
+
+						<s:column headerText="Vendredi" width="50">
+							<center>
+								<s:cellEditor>
+									<f:facet name="output">
+										<h:outputText value="#{heureT.vendredi}" />
+									</f:facet>
+									<f:facet name="input">
+										<s:inputText id="inputVendredi" value="#{heureT.vendredi}"
+											style="width:100%" />
+									</f:facet>
+								</s:cellEditor>
+							</center>
+						</s:column>
+
+						<s:column headerText="Samedi" width="50">
+							<center>
+								<s:cellEditor>
+									<f:facet name="output">
+										<h:outputText value="#{heureT.samedi}" />
+									</f:facet>
+									<f:facet name="input">
+										<s:inputText id="inputSamedi" value="#{heureT.samedi}"
+											style="width:100%" />
+									</f:facet>
+								</s:cellEditor>
+							</center>
+						</s:column>
+						<s:column headerText="Dimanche" width="50"  >
+							
+							<center>
+								<s:cellEditor>
+									<f:facet name="output">
+										<h:outputText value="#{heureT.dimanche}" />
+									</f:facet>
+									<f:facet name="input">
+										<s:inputText id="inputDimanche" value="#{heureT.dimanche}"
+											style="width:100%" />
+									</f:facet>
+								</s:cellEditor>
+							</center>
+							
+						</s:column>
+						<!-- 
+						<s:column headerText="Par défaut" width="90">
+							<center>
+								<s:commandLink id="editlink"
+									action="#{heurestravailManagedBean.updateHeureTravailByDefault(heureT)}"
+									update="basicDT,msgs,editlink">
+									<s:selectBooleanButton onLabel="Par défaut"
+										offLabel="Personnalisé" value="#{heureT.byDefault}"
+										style="font-size:12px">
+									</s:selectBooleanButton>
+
+
+								</s:commandLink>
+							</center>
+
+						</s:column>
+ -->
+						<s:column headerText="Modifier" width="45">
+							<s:rowEditor />
+						</s:column>
+						
+						
+
+						<s:column headerText="Supprimer" width="55">
+							<center>
+							
+						<s:commandLink id="deleteLink" styleClass="ui-icon ui-icon-trash"
+							action="#{heurestravailManagedBean.deleteHeuresTravail(heureT)}"
+							update=":tableForm:basicDT"
+							actionListener="#{heurestravailManagedBean.ajouterHeuresTravail}">
+							<s:confirm header="Confirmation"
+								message="Etes-vous sure de vouloir supprimer les paramètres de la période sélectionnée ?"
+								icon="ui-icon-alert" />
+						</s:commandLink>
+							</center>
+							<s:confirmDialog global="true" showEffect="fade"
+								hideEffect="fade">
+								<s:commandButton value="Oui" type="button"
+									styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+							
+								<s:commandButton value="Non" type="button"
+									styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+							</s:confirmDialog>
+
+						</s:column>
+
+						
+
+					</s:dataTable>
+
+					<input type="hidden" name="${_csrf.parameterName}"
+						value="${_csrf.token}" />
+				</h:form>
+			</div>
+				</s:panel>
+			</div>
+
+	</ui:define>
+</ui:composition>

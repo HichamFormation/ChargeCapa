@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:s="http://primefaces.org/ui"
+	template="/WEB-INF/templates/template.xhtml">
+
+	<ui:define name="content">
+		<h1>
+			<center>
+				<h:outputText value="Suivi Technique" />
+			</center>
+		</h1>
+		<div jsf:id="wrapper"
+			style="border-top: 1px solid #d0d0d0; margin-top: 12px; padding-top: 12px">
+
+			<h:form>
+				<div>
+					<s:panel id="topPanel">
+						<table>
+							<tr>
+								<td><s:outputLabel id="label" value="Utilisateur : "
+										for="u" /> 
+										<s:autoComplete id="u" dropdown="true"
+										completeMethod="#{userManagedBean.completeUser}" var="user"
+										itemLabel="#{user.lastName}" itemValue="#{user.lastName}"
+										groupBy="#{userManagedBean.getUserGroup(user)}"
+										scrollHeight="250">
+										<td><s:message id="messageUser" for="u" /></td>
+										<s:ajax event="itemSelect"
+											listener="#{userManagedBean.handleSelect}"
+											update=":tableForm:basicDT, tableForm:basicDT1"  />
+									</s:autoComplete></td>
+							</tr>
+						</table>
+					</s:panel>
+				</div>
+				<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+			</h:form>
+		</div>
+		<h:form id="tableForm">
+			<s:dataTable id="basicDT" var="user"
+				value="#{userManagedBean.filteredUsers}" rowKey="#{user.userId}"
+				style="margin-bottom:20px" resizableColumns="true" liveResize="true"
+				widgetVar="usersTable">
+
+
+				<s:ajax event="sort" skipChildren="false" />
+
+
+				<s:column headerText="Nom">
+				<center>
+					<h:outputText value="#{user.lastName}" />
+				</center>
+				</s:column>
+
+
+				<s:column headerText="Prénom">
+					<center>
+						<h:outputText value="#{user.firstName}" />
+					</center>
+				</s:column>
+
+
+				<s:column headerText="Matricule">
+					<center>
+						<h:outputText value="#{user.matricule}" />
+					</center>
+				</s:column>
+
+
+				<s:column headerText="Groupe">
+					<center>
+						<h:outputText value="#{user.groupe}" />
+					</center>
+				</s:column>
+
+				<s:column headerText="Centre de Profit">
+					<center>
+						<h:outputText value="#{user.centreProfit}" />
+					</center>
+				</s:column>
+			</s:dataTable>
+
+
+
+			<s:dataTable id="basicDT1" var="suiviT"
+				value="#{userManagedBean.filteredSuiviTech}"
+				rowKey="#{suivitechnique.id_suiviTech}" style="margin-bottom:20px"
+				resizableColumns="true" liveResize="true" widgetVar="suivisTable">
+
+
+
+
+				<s:column headerText="N°" width="50">
+					<center>
+						<h:outputText value="#{userManagedBean.user.suiviTechnique.id_suiviTech}" />
+					</center>
+				</s:column>
+
+				<s:column headerText="PB" width="50">
+					<center>
+						<h:outputText value="#{userManagedBean.user.suiviTechnique.PB}" />
+					</center>
+				</s:column>
+
+				<s:column headerText="TS" width="50">
+					<center>
+						<h:outputText value="#{userManagedBean.user.suiviTechnique.TS}" />
+					</center>
+				</s:column>
+
+				<s:column headerText="Taches" width="50">
+					<center>
+						<h:outputText value="#{userManagedBean.user.suiviTechnique.taches}" />
+					</center>
+				</s:column>
+
+				<s:column headerText="Heures Référent (en h)" width="150">
+					<center>
+						<h:outputText value="#{userManagedBean.user.suiviTechnique.heureRef}" />
+					</center>
+				</s:column>
+
+				<s:column headerText="Heures Réalisation (en h)"  width="180">
+					<center>
+						<h:outputText value="#{userManagedBean.user.suiviTechnique.heureRealisation}" />
+					</center>
+				</s:column>
+
+				<s:column headerText="RAF"  width="50">
+					<center>
+						<h:outputText value="#{userManagedBean.user.suiviTechnique.RAF}" />
+					</center>
+				</s:column>
+
+				<s:column headerText="Avancement"  width="80">
+					<center>
+						<h:outputText value="#{userManagedBean.user.suiviTechnique.avancement}" />
+					</center>
+				</s:column>
+
+				<s:column headerText="Date" width="80">
+					<center>
+						<h:outputText value="#{userManagedBean.user.suiviTechnique.date}">
+						<f:convertDateTime pattern="dd/MM/yyyy" />
+						 </h:outputText>
+					</center>
+				</s:column>
+
+				<s:column headerText="Statut" width="70">
+					<center>
+						<h:outputText value="#{userManagedBean.user.suiviTechnique.statut}" />
+					</center>
+				</s:column>
+
+			</s:dataTable>
+
+<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+		</h:form>
+	</ui:define>
+</ui:composition>

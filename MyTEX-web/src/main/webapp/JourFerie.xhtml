@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:s="http://primefaces.org/ui"
+	template="/WEB-INF/templates/template.xhtml">
+	<ui:define name="content">
+		<h1>
+			<h:outputText value="Gestion des jours fériés" />
+		</h1>
+
+
+
+		<div jsf:id="wrapper"
+			style="border-top: 1px solid #d0d0d0; margin-top: 12px; padding-top: 12px">
+			<H2>Ajouter un jour férié :</H2>
+			<h:form>
+				<div>
+					<s:panel id="topPanel">
+
+						<center>
+							<table>
+								<tr>
+
+									<td><s:outputLabel value="Occasion:" /></td>
+									<td><s:inputText
+											value="#{JourFerieManagedBean.jourFerie.occasion}"
+											id="occasion1" s:placeholder="Entrer le nom de l'occasion"
+											maxlength="100" required="true"
+											requiredMessage="Champs obligatoire !!" size="50">
+											<f:validateLength maximum="60" />
+										</s:inputText></td>
+									<td><s:message id="messageOccasion" for="occasion1" /></td>
+								</tr>
+
+
+
+
+								<tr>
+									<td><s:outputLabel value="De :" /></td>
+									<td><s:calendar id="date1"
+											value="#{JourFerieManagedBean.jourFerie.date_debut}"
+											navigator="true" pattern="dd/MM/yyyy" effect="fold"
+											requiredMessage="Champs obligatoire !!"
+											p:placeholder="Entrer la date du début" maxlength="100"
+											required="true" size="50" styleClass="dateDebutCalendar" /></td>
+
+									<td><s:message id="messageDateDebut" for="date1" /></td>
+
+
+
+
+
+
+									<td><s:outputLabel value="À :" /></td>
+									<td><s:calendar id="date2"
+											value="#{JourFerieManagedBean.jourFerie.date_fin}"
+											navigator="true" pattern="dd/MM/yyyy" effect="fold"
+											requiredMessage="Champs obligatoire !!"
+											p:placeholder="Entrer la date de la fin" maxlength="100"
+											required="true" size="50" /></td>
+									<td><s:message id="messageDateFin" for="date2" /></td>
+
+									<td><s:spacer width="30px;" /></td>
+								</tr>
+
+
+
+
+
+
+
+							</table>
+						</center>
+						<f:facet name="footer">
+							<center>
+								<s:commandButton action="#{JourFerieManagedBean.saveJourFerie}"
+									value="Ajouter" icon="fa fa-arrows"
+									update=":tableForm:basicDT,occasion1,date1,date2,messageOccasion,messageDateDebut,messageDateFin" />
+							</center>
+						</f:facet>
+					</s:panel>
+				</div>
+				<input type="hidden" name="${_csrf.parameterName}"
+					value="${_csrf.token}" />
+			</h:form>
+		</div>
+
+		<br></br>
+		<br></br>
+
+		<s:growl id="msgs" showDetail="true" />
+		<h:form id="tableForm">
+			<s:dataTable id="basicDT" var="jourFerie"
+				value="#{JourFerieManagedBean.jourFerieList}"
+				rowKey="#{jourFerie.id_jrFerie}" editable="true"
+				style="margin-bottom:20px" resizableColumns="true" liveResize="true"
+				rows="10" paginator="true"
+				paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				rowsPerPageTemplate="5,10,15" paginatorPosition="bottom"
+				currentPageReportTemplate="(Page: {currentPage}/{totalPages})">
+				<!-- "(Entries: {startRecord} - {endRecord} of {totalRecords}, Page: {currentPage}/{totalPages})" -->
+
+
+				<s:ajax event="sort" skipChildren="false" />
+
+				<s:ajax event="rowEditCancel"
+					listener="#{JourFerieManagedBean.onRowCancel}"
+					update="basicDT,msgs" />
+				<s:ajax event="rowEdit"
+					listener="#{JourFerieManagedBean.saveJourFerieEdition(jourFerie)}"
+					update="basicDT,msgs,edit" />
+
+
+				<s:column headerText="Occasion" filterBy="#{jourFerie.occasion}"
+					filterStyle="width:200px" filterMatchMode="contains"
+					sortBy="#{jourFerie.occasion}">
+					<center>
+						<s:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{jourFerie.occasion}" />
+							</f:facet>
+							<f:facet name="input">
+								<s:inputText id="modeljourFerieInputOccasion"
+									value="#{jourFerie.occasion}" style="width:100%" />
+							</f:facet>
+						</s:cellEditor>
+					</center>
+				</s:column>
+
+
+
+
+
+				<s:column headerText="Date de début"
+					filterBy="#{jourFerie.date_debut}" filterStyle="width:200px"
+					filterMatchMode="contains" sortBy="#{jourFerie.date_debut}">
+					<center>
+						<s:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{jourFerie.date_debut}">
+									<f:convertDateTime pattern="dd/MM/yyyy" />
+								</h:outputText>
+							</f:facet>
+							<f:facet name="input">
+								<s:calendar id="date1" value="#{jourFerie.date_debut}"
+									locale="de" navigator="true" pattern="dd/MM/yyyy" effect="fold" />
+							</f:facet>
+						</s:cellEditor>
+					</center>
+				</s:column>
+
+
+				<s:column headerText="Date de fin" filterBy="#{jourFerie.date_fin}"
+					filterStyle="width:200px" filterMatchMode="contains"
+					sortBy="#{jourFerie.date_fin}">
+					<center>
+						<s:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{jourFerie.date_fin}">
+									<f:convertDateTime pattern="dd/MM/yyyy" />
+								</h:outputText>
+							</f:facet>
+							<f:facet name="input">
+								<s:calendar id="date2" value="#{jourFerie.date_fin}" locale="de"
+									navigator="true" pattern="dd/MM/yyyy" effect="fold" />
+							</f:facet>
+						</s:cellEditor>
+					</center>
+				</s:column>
+
+
+				<s:column headerText="Durée (en jour)"
+					filterBy="#{jourFerie.periode}" filterStyle="width:200px"
+					filterMatchMode="contains" sortBy="#{jourFerie.periode}">
+					<center>
+						<s:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{jourFerie.periode}" />
+							</f:facet>
+							<f:facet name="input">
+								<s:inputText id="modeljourFerieInputPeriode"
+									value="#{jourFerie.periode}" style="width:100%" />
+							</f:facet>
+						</s:cellEditor>
+					</center>
+				</s:column>
+
+
+				<s:column headerText="Modifier" width="80">
+					<s:rowEditor id="edit" />
+				</s:column>
+
+				<s:column headerText="Supprimer" width="80">
+					<center>
+						<s:commandLink id="deleteLink" styleClass="ui-icon ui-icon-trash"
+							action="#{JourFerieManagedBean.deleteJourFerie(jourFerie)}"
+							update="basicDT"
+							actionListener="#{JourFerieManagedBean.ajouterJourFerie}">
+							<s:confirm header="Confirmation"
+								message="Etes-vous sure de vouloir supprimer le jour férié sélectionné ?"
+								icon="ui-icon-alert" />
+						</s:commandLink>
+					</center>
+					<s:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+						<s:commandButton value="Oui" type="button"
+							styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+						<!--  actionListener="#{WbsManagedBean.confirmDelete}" -->
+						<s:commandButton value="Non" type="button"
+							styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+					</s:confirmDialog>
+
+				</s:column>
+
+
+			</s:dataTable>
+
+			<input type="hidden" name="${_csrf.parameterName}"
+				value="${_csrf.token}" />
+		</h:form>
+
+
+	</ui:define>
+</ui:composition>
