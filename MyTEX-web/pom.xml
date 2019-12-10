@@ -11,7 +11,7 @@
 	<name>web</name>
 
 	<properties>
-		<spring.security.version>4.0.1.RELEASE</spring.security.version>
+		<spring.security.version>5.2.1.RELEASE</spring.security.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<spring.version>4.1.6.RELEASE</spring.version>
 		<slf4j.version>1.5.10</slf4j.version>
